@@ -1,5 +1,7 @@
 public class Animal {
-    public Animal(String say){
-        System.out.println(say);
+    public Animal(){
+    }
+    public void say(){
+        System.out.println("I live");
     }
 }

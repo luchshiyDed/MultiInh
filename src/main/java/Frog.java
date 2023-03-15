@@ -1,12 +1,9 @@
 import java.util.Stack;
 
-@ExtendsAll(classes = {Animal.class, Stack.class})
+@ExtendsAll(classes = {WaterAnimal.class,LandAnimal.class})
 public class Frog {
 
-    public Frog(String str){
-        System.out.println(str);
-    }
-    public void say(){
-        System.out.println("Да");
+    public Frog(){
+
     }
 }
