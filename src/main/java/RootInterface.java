@@ -1,2 +1,2 @@
-public interface RootInterface {
+public @interface RootInterface {
 }
