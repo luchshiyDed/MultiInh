@@ -1,7 +1,8 @@
 @ExtendsAll(classes = {Animal.class})
-public class LandAnimal {
+public class LandAnimal implements SomeInterface {
     public LandAnimal(){
     }
+    @Override
     public void say(){
         System.out.println("I live on the ground");
     }
