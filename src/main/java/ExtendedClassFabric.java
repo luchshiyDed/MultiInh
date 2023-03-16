@@ -1,7 +1,10 @@
 import io.activej.codegen.ClassBuilder;
 import io.activej.codegen.DefiningClassLoader;
+import io.activej.codegen.expression.Expression;
+import io.activej.codegen.expression.Variable;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,11 +13,7 @@ import static io.activej.codegen.expression.Expressions.*;
 
 public class ExtendedClassFabric {
 
-    public ExtendedClassFabric(){
-    }
-    // чтобы нормально добавлять методы в билдер класса делаем билдер для Expressionov
-    private class ActiveJExpessionBuilder{
-
+    public ExtendedClassFabric() {
     }
 
     public Object createObject(Class<?> aCLass, ArrayList<Object[]> parameters) {
@@ -36,13 +35,11 @@ public class ExtendedClassFabric {
         }
         ArrayList<SomeInterface> compositionObjects = new ArrayList<>(aCLass.getAnnotation(ExtendsAll.class).classes().length);
         try {
-            if(parametersTypes.size()>0)
+            if (parametersTypes.size() > 0)
                 compositionObjects.add(0, (SomeInterface) aCLass.getConstructor(parametersTypes.get(0)).newInstance(parameters.get(0)));
             else
                 compositionObjects.add(0, (SomeInterface) aCLass.getConstructor().newInstance());
-        }
-
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             System.out.println(Arrays.toString(parametersTypes.get(0)));
             e.printStackTrace();
         }
@@ -50,22 +47,36 @@ public class ExtendedClassFabric {
         for (int i = 0; i < aCLass.getAnnotation(ExtendsAll.class).classes().length; i++) {
             try {
                 if (i + 1 >= parameters.size())
-                    compositionObjects.add(i+1, (SomeInterface) aCLass.getAnnotation(ExtendsAll.class).classes()[i].getConstructor().newInstance());
+                    compositionObjects.add(i + 1, (SomeInterface) aCLass.getAnnotation(ExtendsAll.class).classes()[i].getConstructor().newInstance());
                 else
-                    compositionObjects.add(i+1, (SomeInterface) aCLass.getAnnotation(ExtendsAll.class).classes()[i].getConstructor(parametersTypes.get(i + 1)).newInstance(parameters.get(i + 1)));
+                    compositionObjects.add(i + 1, (SomeInterface) aCLass.getAnnotation(ExtendsAll.class).classes()[i].getConstructor(parametersTypes.get(i + 1)).newInstance(parameters.get(i + 1)));
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
-
         ClassBuilder<?> builder = ClassBuilder.create(aCLass);
-        builder=builder.withField("objects",compositionObjects.getClass(),value(compositionObjects));
-        builder=builder.withMethod("say",call(cast(call(property(self(),"objects"),"get",value(1)),SomeInterface.class)/*вот ето будет в билдере expressions*/,"say"));
-        builder=builder.withMethod("say",call(cast(call(property(self(),"objects"),"get",value(2)),SomeInterface.class),"say"));
+        builder = builder.withField("objects", compositionObjects.getClass(), value(compositionObjects));
+        for (Method method : SomeInterface.class.getMethods()) {
+            ArrayList<Expression> methodsExpressions = new ArrayList<>();
+            for (int i = 0; i < compositionObjects.size(); i++) {
+                try {
+                    compositionObjects.get(i).getClass().getMethod(method.getName(),method.getParameterTypes());
+                    ArrayList<Expression> variables= new ArrayList<>();
+                    for (int j = 0; j < method.getParameterCount(); j++) {
+                        variables.add(arg(j));
+                    }
+                    if(variables.size()>0)
+                        methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), SomeInterface.class), method.getName(),sequence(variables)));
+                    else
+                        methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), SomeInterface.class), method.getName()));
+                } catch (NoSuchMethodException ignored) {
+                }
+            }
+            builder=builder.withMethod(method.getName(),method.getReturnType(), Arrays.asList(method.getParameterTypes()),sequence(methodsExpressions));
+        }
+
         DefiningClassLoader classLoader = DefiningClassLoader.create();
         return builder.defineClassAndCreateInstance(classLoader);
-        //for (Method method : aInterface.getMethods()) {
-            //}
     }
 }
 
