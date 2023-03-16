@@ -6,7 +6,15 @@ public class WaterAnimal implements SomeInterface {
     public void say(){
         System.out.println("I live in water");
     }
-    public void swim(){
+
+    @Override
+    public void move() {
         System.out.println("I swim");
     }
+
+    @Override
+    public void sound(String str) {
+        System.out.println(str);
+    }
+
 }

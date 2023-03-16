@@ -1,12 +1,22 @@
 @ExtendsAll(classes = {Animal.class})
 public class LandAnimal implements SomeInterface {
-    public LandAnimal(){
+    String str;
+    public LandAnimal(String str){
+        this.str=str;
     }
     @Override
     public void say(){
         System.out.println("I live on the ground");
     }
-    public void walk(){
+
+    @Override
+    public void move() {
         System.out.println("I walk");
     }
+
+    @Override
+    public void sound(String str) {
+        System.out.println(this.str);
+    }
+
 }

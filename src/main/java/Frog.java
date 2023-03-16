@@ -1,6 +1,6 @@
 import java.util.Stack;
 
-@ExtendsAll(classes = {WaterAnimal.class,LandAnimal.class})
+@ExtendsAll(classes = {LandAnimal.class,WaterAnimal.class})
 public class Frog implements SomeInterface {
 
     public Frog(){
@@ -9,6 +9,16 @@ public class Frog implements SomeInterface {
 
     @Override
     public void say() {
+
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void sound(String str) {
 
     }
 }
