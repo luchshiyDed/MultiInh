@@ -14,9 +14,9 @@ public class ExtendedClassFabric {
     private HashMap<String, ArrayList<Expression>> methods;
     private ClassBuilder<?> builder;
     private Stack<ExtendedClassFabric> stack;
-    private Class<?> rootInterface;
+    private final Class<?> rootInterface;
     private ArrayList<Object> compositionObjects;
-    private Class<?> extendibleClass;
+    private final Class<?> extendibleClass;
 
     // Creates an expression for addExpression i - index in compositionObjects, method - called method
     private Expression createMethodExpr(Integer i, Method method){
@@ -40,6 +40,11 @@ public class ExtendedClassFabric {
         return builder;
     }
 
+    /***
+     *
+     * @param parameters each element is an input parameter for a super-class
+     * @return object extended by classes
+     */
     public Object create(ArrayList<Object[]> parameters) {
         ArrayList<Class<?>[]> parametersTypes = new ArrayList<>();
 
