@@ -1,8 +1,9 @@
+package multiInheritance;
+
+import demoClasses.SomeInterface;
 import io.activej.codegen.ClassBuilder;
 import io.activej.codegen.DefiningClassLoader;
 import io.activej.codegen.expression.Expression;
-import io.activej.codegen.expression.Variable;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -13,10 +14,7 @@ import static io.activej.codegen.expression.Expressions.*;
 
 public class ExtendedClassFabric {
 
-    public ExtendedClassFabric() {
-    }
-
-    public Object createObject(Class<?> aCLass, ArrayList<Object[]> parameters) {
+    public static Object createObject(Class<?> aCLass, ArrayList<Object[]> parameters) {
         ArrayList<Class<?>[]> parametersTypes = new ArrayList<>();
         Class<?> aInterface = null;
         for (int i = 0; i < aCLass.getInterfaces().length; i++) {
@@ -60,19 +58,19 @@ public class ExtendedClassFabric {
             ArrayList<Expression> methodsExpressions = new ArrayList<>();
             for (int i = 0; i < compositionObjects.size(); i++) {
                 try {
-                    compositionObjects.get(i).getClass().getMethod(method.getName(),method.getParameterTypes());
-                    ArrayList<Expression> variables= new ArrayList<>();
+                    compositionObjects.get(i).getClass().getMethod(method.getName(), method.getParameterTypes());
+                    ArrayList<Expression> variables = new ArrayList<>();
                     for (int j = 0; j < method.getParameterCount(); j++) {
                         variables.add(arg(j));
                     }
-                    if(variables.size()>0)
-                        methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), SomeInterface.class), method.getName(),sequence(variables)));
+                    if (variables.size() > 0)
+                        methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), SomeInterface.class), method.getName(), sequence(variables)));
                     else
                         methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), SomeInterface.class), method.getName()));
                 } catch (NoSuchMethodException ignored) {
                 }
             }
-            builder=builder.withMethod(method.getName(),method.getReturnType(), Arrays.asList(method.getParameterTypes()),sequence(methodsExpressions));
+            builder = builder.withMethod(method.getName(), method.getReturnType(), Arrays.asList(method.getParameterTypes()), sequence(methodsExpressions));
         }
 
         DefiningClassLoader classLoader = DefiningClassLoader.create();

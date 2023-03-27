@@ -1,3 +1,8 @@
+package multiInheritance;
+
+import demoClasses.Frog;
+import multiInheritance.ExtendedClassFabric;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -7,6 +12,6 @@ public class Main {
         generalArray.add(new Object[]{});
         generalArray.add(new String[]{"awe"});
         Frog frog = (Frog) extendedClassFabric.createObject(Frog.class,generalArray);
-        frog.sound("hi");
+        frog.say();
     }
 }

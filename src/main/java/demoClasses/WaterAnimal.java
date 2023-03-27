@@ -1,3 +1,8 @@
+package demoClasses;
+
+import demoClasses.Animal;
+import multiInheritance.ExtendsAll;
+
 @ExtendsAll(classes = {Animal.class})
 public class WaterAnimal implements SomeInterface {
     public WaterAnimal(){
