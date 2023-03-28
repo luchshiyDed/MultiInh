@@ -57,15 +57,16 @@ public class ExtendedClassFabric {
         }
         this.compositionObjects=new ArrayList<>();
         //TODO: createObjects через стек
-        builder.withField("objects", parameters.getClass());
+        // здесь прикол со стеком из которого по итогу получается сделанный массив composition objects
+        builder.withField("objects", compositionObjects.getClass(),value(compositionObjects));
         DefiningClassLoader classLoader = DefiningClassLoader.create();
         return builder.defineClassAndCreateInstance(classLoader);
     }
 
     public ExtendedClassFabric(Class<?> rootInterface, Class<?> aClass) {
-        methods = new HashMap<>();
+        this.methods = new HashMap<>();
         this.rootInterface = rootInterface;
-        builder = ClassBuilder.create(rootInterface);
+        this.builder = ClassBuilder.create(rootInterface);
         this.extendibleClass=aClass;
     }
 }
