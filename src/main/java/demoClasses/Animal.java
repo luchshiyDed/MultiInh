@@ -3,6 +3,12 @@ package demoClasses;
 public class Animal implements SomeInterface {
     public Animal(){
     }
+
+    @Override
+    public Object getObject(int i) {
+        return null;
+    }
+
     @Override
     public void say(){
         System.out.println("I live");

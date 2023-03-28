@@ -111,7 +111,7 @@ public class ExtendedClassFabric {
             }
             builder.withMethod(method.getName(), method.getReturnType(), Arrays.asList(method.getParameterTypes()), sequence(methodsExpressions));
         }
-
+        builder.withMethod("getObject",Object.class,Arrays.asList(new Class<?>[]{int.class}),call(property(self(), "objects"), "get",arg(0)));
         DefiningClassLoader classLoader = DefiningClassLoader.create();
         return builder.defineClassAndCreateInstance(classLoader);
     }

@@ -12,6 +12,11 @@ public class Frog implements SomeInterface {
     }
 
     @Override
+    public Object getObject(int i) {
+        return null;
+    }
+
+    @Override
     public void say() {
         System.out.println("I am a frog");
     }

@@ -7,6 +7,12 @@ import multiInheritance.ExtendsAll;
 public class WaterAnimal implements SomeInterface {
     public WaterAnimal(){
     }
+
+    @Override
+    public Object getObject(int i) {
+        return null;
+    }
+
     @Override
     public void say(){
         System.out.println("I live in water");

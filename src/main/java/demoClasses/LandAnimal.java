@@ -9,6 +9,12 @@ public class LandAnimal implements SomeInterface {
     public LandAnimal(String str){
         this.str=str;
     }
+
+    @Override
+    public Object getObject(int i) {
+        return null;
+    }
+
     @Override
     public void say(){
         System.out.println("I live on the ground");
