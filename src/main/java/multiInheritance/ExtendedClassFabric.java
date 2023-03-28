@@ -40,7 +40,15 @@ public class ExtendedClassFabric {
         builder.withMethod(methodName, returnType, parameters, sequence(methods.get(methodName)));
         return builder;
     }
-
+    private boolean interfaceCheck(){
+        try {
+            rootInterface.getMethod("getObject",int.class);
+        } catch (NoSuchMethodException e) {
+            System.err.println("Your root interface must contain a <public Object getObject(int)> method ");
+            e.printStackTrace();
+        }
+        return true;
+    }
     /***
      *
      * @param parameters each element is an input parameter for a super-class
