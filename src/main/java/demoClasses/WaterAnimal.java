@@ -19,7 +19,7 @@ public class WaterAnimal implements SomeInterface {
 
     @Override
     public void sound(String str) {
-        System.out.println(str);
+        System.out.println("I am a water animal i got the parameter from parameters i said:"+str);
     }
 
 }

@@ -18,7 +18,7 @@ public class ExtendedClassFabric {
     private final Class<?> rootInterface;
     private ArrayList<Object> compositionObjects;
     private final Class<?> extendibleClass;
-    
+
     // Creates an expression for addExpression i - index in compositionObjects, method - called method
     private Expression createMethodExpr(Integer i, Method method){
         ArrayList<Expression> variables = new ArrayList<>();

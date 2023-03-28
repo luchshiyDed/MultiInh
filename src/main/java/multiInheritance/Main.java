@@ -14,6 +14,6 @@ public class Main {
         generalArray.add(new Object[]{});
         generalArray.add(new String[]{"awe"});
         Frog frog = (Frog) extendedClassFabric.createObject(generalArray);
-        frog.say();
+        frog.sound("1");
     }
 }
