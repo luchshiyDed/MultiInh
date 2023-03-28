@@ -13,8 +13,8 @@ public class WaterAnimal implements SomeInterface {
     }
 
     @Override
-    public void move() {
-        System.out.println("I swim");
+    public String returnAString() {
+        return "w";
     }
 
     @Override

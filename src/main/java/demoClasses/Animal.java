@@ -9,8 +9,8 @@ public class Animal implements SomeInterface {
     }
 
     @Override
-    public void move() {
-
+    public String returnAString() {
+        return "a";
     }
 
     @Override

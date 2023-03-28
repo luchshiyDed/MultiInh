@@ -2,6 +2,6 @@ package demoClasses;
 
 public interface SomeInterface {
     void say();
-    void move();
+    String returnAString();
     void sound(String str);
 }

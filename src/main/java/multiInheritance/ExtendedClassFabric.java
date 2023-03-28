@@ -37,7 +37,7 @@ public class ExtendedClassFabric {
 
     // creates the method and adds it to the final class
     private ClassBuilder<?> createAndAddMethod(String methodName, Class<?> returnType, List<Class<?>> parameters) {
-        builder = builder.withMethod(methodName, returnType, parameters, sequence(methods.get(methodName)));
+        builder.withMethod(methodName, returnType, parameters, sequence(methods.get(methodName)));
         return builder;
     }
 
@@ -103,24 +103,13 @@ public class ExtendedClassFabric {
             }
         }
         ClassBuilder<?> builder = ClassBuilder.create(this.extendibleClass);
-        builder = builder.withField("objects", compositionObjects.getClass(), value(compositionObjects));
+        builder.withField("objects", compositionObjects.getClass(), value(compositionObjects));
         for (Method method : this.rootInterface.getMethods()) {
             ArrayList<Expression> methodsExpressions = new ArrayList<>();
-            for (int i = 0; i < compositionObjects.size(); i++) {
-                try {
-                    compositionObjects.get(i).getClass().getMethod(method.getName(), method.getParameterTypes());
-                    ArrayList<Expression> variables = new ArrayList<>();
-                    for (int j = 0; j < method.getParameterCount(); j++) {
-                        variables.add(arg(j));
-                    }
-                    if (variables.size() > 0)
-                        methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), this.rootInterface), method.getName(), sequence(variables)));
-                    else
-                        methodsExpressions.add(call(cast(call(property(self(), "objects"), "get", value(i)), this.rootInterface), method.getName()));
-                } catch (NoSuchMethodException ignored) {
-                }
+            for (int i = compositionObjects.size()-1; i >= 0 ; i--) {
+                methodsExpressions.add(this.createMethodExpr(i,method));
             }
-            builder = builder.withMethod(method.getName(), method.getReturnType(), Arrays.asList(method.getParameterTypes()), sequence(methodsExpressions));
+            builder.withMethod(method.getName(), method.getReturnType(), Arrays.asList(method.getParameterTypes()), sequence(methodsExpressions));
         }
 
         DefiningClassLoader classLoader = DefiningClassLoader.create();

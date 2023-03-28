@@ -17,8 +17,8 @@ public class Frog implements SomeInterface {
     }
 
     @Override
-    public void move() {
-        System.out.println("skok skok");
+    public String returnAString() {
+        return "f";
     }
 
     @Override

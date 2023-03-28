@@ -15,8 +15,8 @@ public class LandAnimal implements SomeInterface {
     }
 
     @Override
-    public void move() {
-        System.out.println("I walk");
+    public String returnAString() {
+        return "l";
     }
 
     @Override
