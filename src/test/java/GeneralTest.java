@@ -27,7 +27,7 @@ public class GeneralTest {
         generalArray.add(new String[]{"awe"});
         Frog frog = (Frog) extendedClassFabric.createObject(generalArray);
         frog.say();
-        Assert.assertEquals("I live in water"+System.getProperty("line.separator")+"I live on the ground"+System.getProperty("line.separator")+"I am a frog"+System.getProperty("line.separator")
+        Assert.assertEquals("I live"+System.getProperty("line.separator")+"I live in water"+System.getProperty("line.separator")+"I live on the ground"+System.getProperty("line.separator")+"I am a frog"+System.getProperty("line.separator")
                 , output.toString());
     }
 
