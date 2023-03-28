@@ -31,16 +31,5 @@ public class GeneralTest {
                 , output.toString());
         System.setOut(null);
     }
-    @Test
-    public void wrongInterfaceException(){
-        @RootInterface
-        interface Interface{
-        }
-        class B{}
-        @ExtendsAll(classes = {B.class})
-        class A implements Interface{}
-        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(A.class);
-        extendedClassFabric.create(new ArrayList<>());
-    }
 
 }

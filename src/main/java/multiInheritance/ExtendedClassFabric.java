@@ -95,7 +95,9 @@ public class ExtendedClassFabric {
     }
     /***
      *
-     * @param parameters each element is an input parameter for a super-class
+     * @param parameters input array of parameters 0 index for main class,
+     *                        the order corresponds with the order in ExtendAll annotation if there is no parameters provided
+     *                        the fabric will try to use no-parameters constructor
      * @return object extended by classes
      */
     public Object create(ArrayList<Object[]> parameters) {
