@@ -14,11 +14,11 @@ import static io.activej.codegen.expression.Expressions.*;
 public class ExtendedClassFabric {
     private HashMap<String, ArrayList<Expression>> methods;
     private ClassBuilder<?> builder;
-    private Stack<ExtendedClassFabric> stack;
+    private Stack<Class<?>> stack;
     private final Class<?> rootInterface;
     private ArrayList<Object> compositionObjects;
     private final Class<?> extendibleClass;
-
+    private Stack<Object[]> stackForParameters;
     // Creates an expression for addExpression i - index in compositionObjects, method - called method
     private Expression createMethodExpr(Integer i, Method method){
         ArrayList<Expression> variables = new ArrayList<>();
@@ -32,6 +32,7 @@ public class ExtendedClassFabric {
 
     // add expression to the method body
     private void addExpression(String methodName, Expression expression) {
+        methods.computeIfAbsent(methodName, k -> new ArrayList<>());
         methods.get(methodName).add(expression);
     }
 
@@ -40,14 +41,57 @@ public class ExtendedClassFabric {
         builder.withMethod(methodName, returnType, parameters, sequence(methods.get(methodName)));
         return builder;
     }
-    private boolean interfaceCheck(){
+    private void interfaceCheck(){
         try {
             rootInterface.getMethod("getObject",int.class);
-        } catch (NoSuchMethodException e) {
-            System.err.println("Your root interface must contain a <public Object getObject(int)> method ");
+        } catch ( NullPointerException e) {
+            System.err.println("No rootInterfaceFound");
             e.printStackTrace();
         }
-        return true;
+        catch (NoSuchMethodException e){
+            System.err.println("rootInterface must contain an empty <public Object getObject(int)> method");
+            e.printStackTrace();
+        }
+    }
+    private void fillStack(Class<?> currentClass, ArrayList<Object[]> parameters) {
+        int j = 0;
+        stack = new Stack<>();
+        Queue<Class<?>> queue = new LinkedList<>();
+        stackForParameters = new Stack<>();
+        queue.add(currentClass);
+        while (!queue.isEmpty()) {
+            Class<?> u = queue.remove();
+            stack.push(u);
+            if (j < parameters.size()) {
+                stackForParameters.push(parameters.get(j));
+            } else {
+                stackForParameters.push(new Object[]{});
+            }
+            j++;
+            if (u.isAnnotationPresent(ExtendsAll.class)) {
+                Class<?>[] localObjects = u.getAnnotation(ExtendsAll.class).classes();
+                queue.addAll(Arrays.asList(localObjects));
+            }
+        }
+    }
+
+    private void createObjectsFromStack() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        int size = stack.size();
+        for (int j = 0; j< size; j++) {
+            Object[] array = stackForParameters.pop();
+            Class<?>[] parameters = new Class[array.length];
+            for (int i = 0; i < array.length; i++) {
+                parameters[i] = array[i].getClass();
+            }
+            compositionObjects.add(j, stack.pop().getConstructor(parameters).newInstance(array));
+            for (Method method: rootInterface.getMethods()) {
+                addExpression(method.getName(), createMethodExpr(j,method));
+            }
+        }
+        for (Method method: rootInterface.getMethods()) {
+            createAndAddMethod(method.getName(), method.getReturnType(), Arrays.asList(method.getParameterTypes()));
+        }
+
     }
     /***
      *
@@ -55,33 +99,44 @@ public class ExtendedClassFabric {
      * @return object extended by classes
      */
     public Object create(ArrayList<Object[]> parameters) {
-        ArrayList<Class<?>[]> parametersTypes = new ArrayList<>();
-
-        for (int i = 0; i < parameters.size(); i++) {
-            Class<?>[] array = new Class[parameters.get(i).length];
-            parametersTypes.add(i, array);
-            for (int j = 0; j < parameters.get(i).length; j++) {
-                array[j] = parameters.get(i)[j].getClass();
-            }
-        }
+        this.interfaceCheck();
         this.compositionObjects=new ArrayList<>();
-        //TODO: createObjects через стек
-        // здесь прикол со стеком из которого по итогу получается сделанный массив composition objects
+        this.builder = ClassBuilder.create(this.extendibleClass);
+        fillStack(extendibleClass, parameters);
+        try {
+            createObjectsFromStack();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+
+        }
         builder.withField("objects", compositionObjects.getClass(),value(compositionObjects));
+        builder.withMethod("getObject",Object.class,Arrays.asList(new Class<?>[]{int.class}),call(property(self(), "objects"), "get",arg(0)));
         DefiningClassLoader classLoader = DefiningClassLoader.create();
         return builder.defineClassAndCreateInstance(classLoader);
     }
 
-    public ExtendedClassFabric(Class<?> rootInterface, Class<?> aClass) {
+    public ExtendedClassFabric(Class<?> aClass) {
+        Class<?> rootInterface1;
         this.methods = new HashMap<>();
-        this.rootInterface = rootInterface;
-        this.builder = ClassBuilder.create(rootInterface);
+        rootInterface1 =null;
+        for (Class<?> interfac:aClass.getInterfaces()) {
+            if(interfac.isAnnotationPresent(RootInterface.class))
+                rootInterface1 =interfac;
+        }
+        this.rootInterface = rootInterface1;
+        interfaceCheck();
         this.extendibleClass=aClass;
     }
 
+    /**
+     * creates an 1 level extended object, only the classes in ExtendAll will be extended.
+     * @param parameters input array of parameters 0 index for main class,
+     *                   the order corresponds with the order in ExtendAll annotation if there is no parameters provided
+     *                   the fabric will try to use no-parameters constructor
+     * @return object
+     */
     public Object createObject(ArrayList<Object[]> parameters) {
         ArrayList<Class<?>[]> parametersTypes = new ArrayList<>();
-
         for (int i = 0; i < parameters.size(); i++) {
             Class<?>[] array = new Class[parameters.get(i).length];
             parametersTypes.add(i, array);

@@ -2,7 +2,6 @@ package demoClasses;
 
 import multiInheritance.RootInterface;
 
-import java.util.ArrayList;
 @RootInterface
 public interface SomeInterface {
     Object getObject(int i);

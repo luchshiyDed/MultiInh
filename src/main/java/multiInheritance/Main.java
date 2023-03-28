@@ -9,11 +9,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(SomeInterface.class, Frog.class);
+        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(Frog.class);
         ArrayList<Object[]>generalArray= new ArrayList<>();
         generalArray.add(new Object[]{});
         generalArray.add(new String[]{"awe"});
-        Frog frog = (Frog) extendedClassFabric.createObject(generalArray);
+        Frog frog = (Frog) extendedClassFabric.create(generalArray);
         ((SomeInterface)frog.getObject(0)).say();
+        //frog.say();
     }
 }

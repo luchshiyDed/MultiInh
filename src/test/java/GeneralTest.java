@@ -2,6 +2,8 @@
 import demoClasses.Frog;
 import demoClasses.SomeInterface;
 import multiInheritance.ExtendedClassFabric;
+import multiInheritance.ExtendsAll;
+import multiInheritance.RootInterface;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,29 +13,34 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertThrows;
+
 public class GeneralTest {
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-    @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(output));
-    }
-
     @Test
     public void testString() {
-        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(SomeInterface.class, Frog.class);
+        System.setOut(new PrintStream(output));
+        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(Frog.class);
         ArrayList<Object[]> generalArray= new ArrayList<>();
         generalArray.add(new Object[]{});
         generalArray.add(new String[]{"awe"});
-        Frog frog = (Frog) extendedClassFabric.createObject(generalArray);
+        Frog frog = (Frog) extendedClassFabric.create(generalArray);
         frog.say();
         Assert.assertEquals("I live"+System.getProperty("line.separator")+"I live"+System.getProperty("line.separator")+"I live in water"+System.getProperty("line.separator")+"I live on the ground"+System.getProperty("line.separator")+"I am a frog"+System.getProperty("line.separator")
                 , output.toString());
-    }
-
-    @After
-    public void cleanUpStreams() {
         System.setOut(null);
+    }
+    @Test
+    public void wrongInterfaceException(){
+        @RootInterface
+        interface Interface{
+        }
+        class B{}
+        @ExtendsAll(classes = {B.class})
+        class A implements Interface{}
+        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(A.class);
+        extendedClassFabric.create(new ArrayList<>());
     }
 
 }
