@@ -17,12 +17,12 @@ public class Frog implements SomeInterface {
     }
 
     @Override
-    public void move() {
-        System.out.println("skok skok");
+    public String returnAString() {
+        return "f";
     }
 
     @Override
     public void sound(String str) {
-        System.out.println("sva");
+        System.out.println("I am a frog I ignored the parameter and said:kva");
     }
 }

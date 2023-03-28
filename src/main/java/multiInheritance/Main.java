@@ -1,17 +1,20 @@
 package multiInheritance;
 
 import demoClasses.Frog;
-import multiInheritance.ExtendedClassFabric;
+import demoClasses.SomeInterface;
 
 import java.util.ArrayList;
 
 public class Main {
+
+
     public static void main(String[] args) {
-        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric();
+        ExtendedClassFabric extendedClassFabric =new ExtendedClassFabric(SomeInterface.class, Frog.class);
         ArrayList<Object[]>generalArray= new ArrayList<>();
         generalArray.add(new Object[]{});
         generalArray.add(new String[]{"awe"});
-        Frog frog = (Frog) extendedClassFabric.createObject(Frog.class,generalArray);
+        Frog frog = (Frog) extendedClassFabric.createObject(generalArray);
+        System.out.println(frog.returnAString());
         frog.say();
     }
 }

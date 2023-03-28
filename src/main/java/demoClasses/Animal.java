@@ -9,12 +9,12 @@ public class Animal implements SomeInterface {
     }
 
     @Override
-    public void move() {
-
+    public String returnAString() {
+        return "a";
     }
 
     @Override
     public void sound(String str) {
-
+        System.out.println("I am an animal I can't talk");
     }
 }

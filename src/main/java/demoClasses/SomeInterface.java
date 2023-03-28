@@ -1,11 +1,7 @@
 package demoClasses;
 
-import multiInheritance.RootInterface;
-
-import java.util.ArrayList;
-@RootInterface
 public interface SomeInterface {
     void say();
-    void move();
+    String returnAString();
     void sound(String str);
 }

@@ -15,13 +15,13 @@ public class LandAnimal implements SomeInterface {
     }
 
     @Override
-    public void move() {
-        System.out.println("I walk");
+    public String returnAString() {
+        return "l";
     }
 
     @Override
     public void sound(String str) {
-        System.out.println(this.str);
+        System.out.println("I am a land animal i got the parameter from my constructor and said:"+this.str);
     }
 
 }
