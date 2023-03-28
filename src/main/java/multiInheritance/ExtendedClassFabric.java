@@ -18,6 +18,12 @@ public class ExtendedClassFabric {
     private ArrayList<Object> compositionObjects;
     private final Class<?> extendibleClass;
 
+    // For casting to rootInterface type
+    private class ObjectCaster<T>{
+         public T cast(Object o){
+             return ((T)o);
+         }
+    }
     // Creates an expression for addExpression i - index in compositionObjects, method - called method
     private Expression createMethodExpr(Integer i, Method method){
         ArrayList<Expression> variables = new ArrayList<>();
